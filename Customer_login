@@ -1,0 +1,86 @@
+from tkinter import *
+from PIL import Image, ImageTk
+
+from tkinter import messagebox as msg
+import sqlite3
+def log(root):
+    
+    padx=10
+    pady=10
+    font=("Papyrus 15 bold")
+    img= Image.open("login_customer.jpeg")
+    #To resize image to make it bigger
+    img=img.resize((700,700))
+    img_tk=ImageTk.PhotoImage(img)
+    Label(root, image=img_tk).place(x=0, y=0)
+
+    lbl_username=Label(root,text='Username',bg='pink',fg='black',font=font)
+    lbl_password=Label(root,text='Password',bg='pink',fg='black',font=font)
+    btn_login=Button(root,text='Login',bg='pink',fg='black',font=font,relief='flat')
+    btn_sign_up=Button(root,text='Sign Up',bg='pink',fg='black',font=font,relief='flat')
+
+    e1=StringVar()
+    e2=StringVar()
+            
+    en1=Entry(root,font=font,textvariable=e1)
+    en2=Entry(root,show='*',font=font,textvariable=e2)
+            
+    lbl_username.place(x=240,y=100)
+    lbl_password.place(x=240,y=200)
+    en1.place(x=350,y=100)
+    en2.place(x=350,y=200)
+    btn_login.place(x=310,y=290)
+    btn_sign_up.place(x=450,y=290)
+
+
+    def center_screen():
+        w=600
+        h=600
+        screenwidth=root.winfo_screenwidth()
+        screenheight=root.winfo_screenheight()
+        x=int((screenwidth-w)/2)
+        y=int((screenheight-h)/2)
+        root.geometry(f'{w}x{h}+{x}+{y}')
+    
+        
+        
+    def resizable_screen():
+        root.resizable(False,False)
+    root.title("Customer_Login")
+
+    # function to login for Admin
+    def login_customer():
+        user=en1.get()
+        password=en2.get() 
+        if user=="" or password=="":
+           msg.showerror("Error","Plese enter valid username or password")
+           en1.set=""
+           en2.set=""
+
+           '''root.destroy()
+           new_ww=Tk()
+           enter(new_ww)'''
+        else: 
+           conn=sqlite3.connect('Admin.db')   
+           cur=conn.cursor()   #refer to the database(Admin)
+           
+           cur.execute("SELECT *from Admin WHERE user_name =? AND password=?",(user,password))
+           if cur.fetchone() is not None:
+               # لسه هربطه ب فريم الاوبشن اللي هيبقي فيها اتنين buttons واحد ل فريم السيرش والتاني ل فريم الفساتين 
+               pass
+           else:
+               msg.showerror("Error","Plese enter valid username or password")
+               en1.set=""
+               en2.set=""
+        conn.close()
+
+    center_screen()
+    resizable_screen()
+    root.mainloop()
+def call():
+    root = Tk()
+    
+    log(root)
+    root.mainloop()
+call()
+
